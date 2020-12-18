@@ -1,23 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
+import FoodList from './FoodList';
 
-function App() {
+const foodData = [
+  {
+    name: "Hamburger",
+    price: "20",
+    isVegan: false,
+  }, {
+    name: "Salad",
+    price: "10",
+    isVegan: true,
+  }, {
+    name: "Stick Sausage",
+    price: "7",
+    isVegan: false,
+  }, {
+    name: "Fruit Juice",
+    price: "4",
+    isVegan: true,
+  }
+];
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <FoodList foods={foodData}/>
     </div>
   );
 }
