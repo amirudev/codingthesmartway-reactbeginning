@@ -1,5 +1,7 @@
-import './App.css';
-import FoodList from './FoodList';
+import React, { useState, useEffect } from 'react';
+import FoodList from './components/FoodList';
+import SearchText from './components/SearchInput';
+import SearchVegan from './components/SearchVegan';
 
 const foodData = [
   {
@@ -22,9 +24,44 @@ const foodData = [
 ];
 
 const App = () => {
+  const [foodSearch, setFoodSearch] = useState(
+    localStorage.getItem('foodSearch') || ''
+  );
+  const [veganCheck, setVeganSearch] = useState(false);
+
+  const textSearchChange = event => {
+    setFoodSearch(event.target.value);
+  }
+
+  const checkVeganSearch = event => {
+    setVeganSearch(event.target.checked);
+  }
+
+  useEffect(() => {
+    localStorage.setItem('foodSearch', foodSearch)
+  }, [foodSearch]);
+
+  const filteredFood = foodData.filter(food => {
+      if(veganCheck === true) {
+        if(foodSearch.length > 1){
+          return food.name.includes(foodSearch) && food.isVegan === true;
+        } else {
+          return food.isVegan === true;
+        }
+      } else {
+        if(foodSearch.length > 1){
+          return food.name.includes(foodSearch);
+        } else {
+          return food;
+        }
+      }
+  });
+
   return (
     <div>
-      <FoodList foods={foodData}/>
+      <SearchText value={foodSearch} onTextSearch={textSearchChange} />
+      <SearchVegan onBoxChecked={checkVeganSearch} />
+      <FoodList foods={filteredFood}/>
     </div>
   );
 }
