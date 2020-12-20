@@ -3,7 +3,7 @@ import FoodList from './components/FoodList';
 import SearchText from './components/SearchInput';
 import SearchVegan from './components/SearchVegan';
 
-const foodData = [
+const foodList_data = [
   {
     name: "Hamburger",
     price: "20",
@@ -27,7 +27,23 @@ const App = () => {
   const [foodSearch, setFoodSearch] = useState(
     localStorage.getItem('foodSearch') || ''
   );
+
   const [veganCheck, setVeganSearch] = useState(false);
+  const [foodList, setFoodList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getFoodListAsync = () => 
+  new Promise(resolve => 
+    setTimeout(() => 
+    resolve({foodList: foodList_data}), 1000)
+  )
+
+  useEffect(() => {
+    getFoodListAsync().then(result => {
+      setFoodList(result.foodList)
+      setIsLoading(false)
+    })
+  })
 
   const textSearchChange = event => {
     setFoodSearch(event.target.value);
@@ -41,7 +57,7 @@ const App = () => {
     localStorage.setItem('foodSearch', foodSearch)
   }, [foodSearch]);
 
-  const filteredFood = foodData.filter(food => {
+  const filteredFood = foodList.filter(food => {
       if(veganCheck === true) {
         if(foodSearch.length > 1){
           return food.name.includes(foodSearch) && food.isVegan === true;
@@ -61,7 +77,11 @@ const App = () => {
     <div>
       <SearchText value={foodSearch} onTextSearch={textSearchChange} />
       <SearchVegan onBoxChecked={checkVeganSearch} />
-      <FoodList foods={filteredFood}/>
+      {isLoading ? (
+        <p>Loading data ...</p>
+        ) : (
+          <FoodList foods={filteredFood}/>
+        )}
     </div>
   );
 }
